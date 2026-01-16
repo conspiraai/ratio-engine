@@ -23,9 +23,9 @@ export default function PhiSceneClient() {
   return (
     <div className="mt-10 flex flex-col gap-6">
       <ThreeSceneCanvas createScene={createScene} />
-      <div className="grid gap-4 rounded-2xl border border-white/10 bg-black/50 p-5 text-sm text-white/80 md:grid-cols-[2fr_repeat(2,1fr)]">
+      <div className="glass-card grid gap-4 rounded-2xl p-5 text-sm text-[var(--muted)] md:grid-cols-[2fr_repeat(2,1fr)]">
         <label className="flex flex-col gap-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
             Recursion Depth
           </span>
           <div className="flex items-center gap-4">
@@ -35,9 +35,9 @@ export default function PhiSceneClient() {
               max={10}
               value={recursionDepth}
               onChange={(event) => setRecursionDepth(Number(event.target.value))}
-              className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/20"
+              className="h-2 w-full cursor-pointer appearance-none rounded-full bg-[color:var(--border)]"
             />
-            <span className="w-8 text-right text-base text-white">
+            <span className="w-8 text-right text-base text-[var(--fg)]">
               {recursionDepth}
             </span>
           </div>
@@ -46,11 +46,8 @@ export default function PhiSceneClient() {
           type="button"
           onClick={() => setParticlesEnabled((value) => !value)}
           aria-pressed={particlesEnabled}
-          className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left font-medium transition ${
-            particlesEnabled
-              ? "border-amber-200/40 bg-white/10 text-white"
-              : "border-white/10 bg-white/5 text-white/60"
-          }`}
+          data-active={particlesEnabled}
+          className="toggle-button flex items-center justify-between px-4 py-3 text-left font-medium"
         >
           <span>Particles</span>
           <span className="text-xs uppercase tracking-[0.2em]">
@@ -61,11 +58,8 @@ export default function PhiSceneClient() {
           type="button"
           onClick={() => setAutoDrift((value) => !value)}
           aria-pressed={autoDrift}
-          className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left font-medium transition ${
-            autoDrift
-              ? "border-amber-200/40 bg-white/10 text-white"
-              : "border-white/10 bg-white/5 text-white/60"
-          }`}
+          data-active={autoDrift}
+          className="toggle-button flex items-center justify-between px-4 py-3 text-left font-medium"
         >
           <span>Auto Drift</span>
           <span className="text-xs uppercase tracking-[0.2em]">

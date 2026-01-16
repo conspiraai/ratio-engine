@@ -170,7 +170,7 @@ const createParticles = (count: number) => {
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   const material = new THREE.PointsMaterial({
-    color: 0x9fb1d6,
+    color: 0xe5e5e5,
     size: 0.02,
     transparent: true,
     opacity: 0.4,
@@ -187,8 +187,8 @@ export const createPhiScene = (
   const { recursionDepth, particlesEnabled, autoDrift } = options;
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#05060b");
-  scene.fog = new THREE.Fog("#05060b", 5, 16);
+  scene.background = new THREE.Color("#050505");
+  scene.fog = new THREE.Fog("#050505", 5, 16);
 
   const renderer = new THREE.WebGLRenderer({
     canvas,
@@ -206,10 +206,10 @@ export const createPhiScene = (
   const group = new THREE.Group();
   scene.add(group);
 
-  const ambientLight = new THREE.AmbientLight(0x6d7b9a, 0.6);
-  const keyLight = new THREE.DirectionalLight(0xf5d28c, 1.2);
+  const ambientLight = new THREE.AmbientLight(0x6f6f6f, 0.6);
+  const keyLight = new THREE.DirectionalLight(0xf2f2f2, 1.1);
   keyLight.position.set(4, 4, 6);
-  const rimLight = new THREE.PointLight(0x8cb3ff, 0.6, 10);
+  const rimLight = new THREE.PointLight(0xdedede, 0.5, 10);
   rimLight.position.set(-4, -2, 4);
   scene.add(ambientLight, keyLight, rimLight);
 
@@ -220,7 +220,7 @@ export const createPhiScene = (
     createFramePoints(baseWidth, baseHeight),
   );
   const frameMaterial = new THREE.LineBasicMaterial({
-    color: 0xf5d28c,
+    color: 0xf0f0f0,
     transparent: true,
     opacity: 0.85,
   });
@@ -236,7 +236,7 @@ export const createPhiScene = (
     ),
   );
   const subdivisionMaterial = new THREE.LineBasicMaterial({
-    color: 0x6e85b7,
+    color: 0x8a8a8a,
     transparent: true,
     opacity: 0.4,
   });
@@ -253,7 +253,7 @@ export const createPhiScene = (
     spiralCurve.getPoints(isMobile ? 80 : 140),
   );
   const spiralMaterial = new THREE.LineBasicMaterial({
-    color: 0xf2c16d,
+    color: 0xf4f4f4,
     transparent: true,
     opacity: 0.9,
   });
@@ -262,10 +262,10 @@ export const createPhiScene = (
 
   const rimGeometry = new THREE.BoxGeometry(baseWidth, baseHeight, 0.05);
   const rimMaterial = new THREE.MeshStandardMaterial({
-    color: 0x1a1d2b,
+    color: 0x0f0f10,
     metalness: 0.7,
     roughness: 0.25,
-    emissive: 0xf2c16d,
+    emissive: 0xffffff,
     emissiveIntensity: 0.2,
     transparent: true,
     opacity: 0.55,
@@ -283,7 +283,7 @@ export const createPhiScene = (
     ),
   );
   const hudMaterial = new THREE.LineBasicMaterial({
-    color: 0x4a5d82,
+    color: 0x5f5f5f,
     transparent: true,
     opacity: 0.5,
   });

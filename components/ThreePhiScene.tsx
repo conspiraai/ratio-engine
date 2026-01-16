@@ -61,7 +61,7 @@ export default function ThreePhiScene() {
     const coreGeometry = new THREE.IcosahedronGeometry(1.1, 1);
     const coreMaterial = new THREE.MeshStandardMaterial({
       color: ENGINE_COLORS.core,
-      emissive: "#0b1120",
+      emissive: "#0f0f10",
       roughness: 0.35,
       metalness: 0.65,
     });
@@ -71,7 +71,7 @@ export default function ThreePhiScene() {
     const ringGeometry = new THREE.TorusGeometry(2.4, 0.06, 16, 120);
     const ringMaterial = new THREE.MeshStandardMaterial({
       color: ENGINE_COLORS.ring,
-      emissive: "#451a03",
+      emissive: "#1a1a1a",
       roughness: 0.35,
       metalness: 0.5,
     });
@@ -123,12 +123,12 @@ export default function ThreePhiScene() {
   return (
     <div
       ref={containerRef}
-      className="relative h-[360px] w-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_0_60px_rgba(14,165,233,0.2)]"
+      className="glass-card glass-card--featured relative h-[360px] w-full overflow-hidden rounded-3xl"
     >
-      <div className="absolute left-5 top-5 z-10 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs uppercase tracking-[0.3em] text-slate-200">
+      <div className="chip absolute left-5 top-5 z-10 rounded-full px-4 py-1 text-xs tracking-[0.3em]">
         Phi Visualization v2
       </div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#1e293b_10%,transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12)_0%,transparent_55%)]" />
     </div>
   );
 }
