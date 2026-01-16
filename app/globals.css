@@ -1,13 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617;
-  --foreground: #f8fafc;
+  --bg: #050505;
+  --bg2: #0c0c0f;
+  --fg: #f5f5f5;
+  --muted: #b3b3b3;
+  --card: rgba(18, 18, 20, 0.72);
+  --card2: rgba(26, 26, 30, 0.62);
+  --border: rgba(255, 255, 255, 0.12);
+  --border2: rgba(255, 255, 255, 0.22);
+  --shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  --accent1: #f6f1ff;
+  --accent2: #e8fff5;
+  --accent3: #fff1e6;
+  --glow: rgba(255, 255, 255, 0.28);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -18,7 +29,162 @@
 
 body {
   min-height: 100vh;
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg);
+  background-image: radial-gradient(
+      circle at 15% 20%,
+      rgba(255, 255, 255, 0.05),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(255, 255, 255, 0.04),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 50% 85%,
+      rgba(255, 255, 255, 0.04),
+      transparent 50%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02) 0,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 140px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.015) 0,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px,
+      transparent 140px
+    );
+  color: var(--fg);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+@layer components {
+  .chip {
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--muted);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .glass-card {
+    border: 1px solid var(--border);
+    background: linear-gradient(160deg, var(--card), var(--card2));
+    box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+  }
+
+  .glass-card--featured {
+    position: relative;
+    border: 1px solid var(--border2);
+    box-shadow: var(--shadow), 0 0 40px rgba(255, 255, 255, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    isolation: isolate;
+  }
+
+  .glass-card--featured::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      120deg,
+      var(--accent1),
+      var(--accent2),
+      var(--accent3)
+    );
+    opacity: 0.35;
+    pointer-events: none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .btn-primary {
+    border-radius: 999px;
+    border: 1px solid var(--border2);
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.2),
+      0 0 30px rgba(232, 255, 245, 0.2);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible,
+  .toggle-button:focus-visible {
+    outline: 2px solid var(--accent2);
+    outline-offset: 3px;
+  }
+
+  .btn-secondary {
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg);
+    font-weight: 600;
+    transition: border-color 0.2s ease, color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--border2);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+  }
+
+  .toggle-button {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--muted);
+    transition: border-color 0.2s ease, color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .toggle-button[data-active="true"] {
+    border-color: var(--border2);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--fg);
+  }
+
+  .icon-frame {
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .glass-card--featured::before {
+    animation: rim-shimmer 6s linear infinite;
+  }
+
+  @keyframes rim-shimmer {
+    0% {
+      opacity: 0.2;
+      filter: hue-rotate(0deg);
+    }
+    50% {
+      opacity: 0.35;
+      filter: hue-rotate(20deg);
+    }
+    100% {
+      opacity: 0.2;
+      filter: hue-rotate(0deg);
+    }
+  }
 }

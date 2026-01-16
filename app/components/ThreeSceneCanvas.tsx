@@ -91,7 +91,7 @@ export default function ThreeSceneCanvas({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full overflow-hidden rounded-2xl border border-white/10 bg-black/60 shadow-[0_0_40px_rgba(15,23,42,0.35)] ${className ?? ""}`}
+      className={`glass-card glass-card--featured relative w-full overflow-hidden rounded-2xl ${className ?? ""}`}
     >
       <canvas
         ref={canvasRef}
