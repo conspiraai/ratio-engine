@@ -5,25 +5,25 @@ import RenderQualitySelect from "@/app/components/RenderQualitySelect";
 import SceneControlsPanel from "@/app/components/SceneControlsPanel";
 import ThreeSceneCanvas from "@/app/components/ThreeSceneCanvas";
 import {
-  createScene as createPhiScene,
+  createScene as createFibonacciScene,
   defaultParams,
   paramSchema,
-  type PhiSceneParams,
-} from "@/app/lib/three/scenes/phi";
+  type FibonacciSceneParams,
+} from "@/app/lib/three/scenes/fibonacci";
 import type { CreateSceneParams, RenderQuality, SceneParamValue } from "@/app/lib/three/types";
 
-export default function PhiSceneClient() {
-  const [params, setParams] = useState<PhiSceneParams>(defaultParams);
+export default function FibonacciSceneClient() {
+  const [params, setParams] = useState<FibonacciSceneParams>(defaultParams);
   const [renderQuality, setRenderQuality] =
     useState<RenderQuality>("medium");
 
   const createScene = useCallback(
-    (sceneParams: CreateSceneParams) => createPhiScene(sceneParams, params),
+    (sceneParams: CreateSceneParams) => createFibonacciScene(sceneParams, params),
     [params],
   );
 
   const handleChange = (id: string, value: SceneParamValue) => {
-    setParams((prev) => ({ ...prev, [id]: value } as PhiSceneParams));
+    setParams((prev) => ({ ...prev, [id]: value } as FibonacciSceneParams));
   };
 
   return (
@@ -31,7 +31,7 @@ export default function PhiSceneClient() {
       <ThreeSceneCanvas
         createScene={createScene}
         renderQuality={renderQuality}
-        label="Phi phyllotaxis spiral"
+        label="Fibonacci sequence modes"
       />
       <SceneControlsPanel
         schema={paramSchema}

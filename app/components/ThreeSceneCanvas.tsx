@@ -2,11 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import type { CreateScene } from "@/app/lib/three/types";
-import { clampDpr } from "@/app/lib/three/utils";
+import type { RenderQuality } from "@/app/lib/three/types";
+import { clampDpr, getRenderQualitySettings } from "@/app/lib/three/utils";
 
 type ThreeSceneCanvasProps = {
   createScene: CreateScene;
   className?: string;
+  renderQuality?: RenderQuality;
+  label?: string;
 };
 
 const getCanvasSize = (element: HTMLElement) => {
@@ -20,6 +23,8 @@ const getCanvasSize = (element: HTMLElement) => {
 export default function ThreeSceneCanvas({
   createScene,
   className,
+  renderQuality = "medium",
+  label = "Ratio visualization",
 }: ThreeSceneCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -34,16 +39,20 @@ export default function ThreeSceneCanvas({
     let animationFrameId = 0;
     let lastTime = performance.now();
     let active = true;
+    let isVisible = document.visibilityState !== "hidden";
 
     const { width, height } = getCanvasSize(container);
     const isMobile = width < 768;
-    const dpr = clampDpr(window.devicePixelRatio || 1, isMobile);
+    const qualitySettings = getRenderQualitySettings(renderQuality, isMobile);
+    const dpr = clampDpr(window.devicePixelRatio || 1, qualitySettings.dprCap);
     let sceneState = createScene({
       canvas,
       width,
       height,
       dpr,
       isMobile,
+      renderQuality,
+      detailLevel: qualitySettings.detailScale,
     });
 
     const handleResize = () => {
@@ -52,7 +61,8 @@ export default function ThreeSceneCanvas({
       }
       const nextSize = getCanvasSize(container);
       const nextIsMobile = nextSize.width < 768;
-      const nextDpr = clampDpr(window.devicePixelRatio || 1, nextIsMobile);
+      const nextQuality = getRenderQualitySettings(renderQuality, nextIsMobile);
+      const nextDpr = clampDpr(window.devicePixelRatio || 1, nextQuality.dprCap);
       sceneState.renderer.setPixelRatio(nextDpr);
       sceneState.renderer.setSize(nextSize.width, nextSize.height, false);
       const camera = sceneState.camera as {
@@ -69,7 +79,7 @@ export default function ThreeSceneCanvas({
     resizeObserver.observe(container);
 
     const tick = (time: number) => {
-      if (!active) {
+      if (!active || !isVisible) {
         return;
       }
       const delta = Math.min(0.05, (time - lastTime) / 1000);
@@ -78,15 +88,38 @@ export default function ThreeSceneCanvas({
       animationFrameId = window.requestAnimationFrame(tick);
     };
 
-    animationFrameId = window.requestAnimationFrame(tick);
+    const startLoop = () => {
+      if (!active || !isVisible) {
+        return;
+      }
+      lastTime = performance.now();
+      animationFrameId = window.requestAnimationFrame(tick);
+    };
+
+    const stopLoop = () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+
+    const handleVisibility = () => {
+      isVisible = document.visibilityState !== "hidden";
+      if (isVisible) {
+        startLoop();
+      } else {
+        stopLoop();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    startLoop();
 
     return () => {
       active = false;
-      window.cancelAnimationFrame(animationFrameId);
+      stopLoop();
+      document.removeEventListener("visibilitychange", handleVisibility);
       resizeObserver.disconnect();
       sceneState.dispose();
     };
-  }, [createScene]);
+  }, [createScene, renderQuality]);
 
   return (
     <div
@@ -96,7 +129,7 @@ export default function ThreeSceneCanvas({
       <canvas
         ref={canvasRef}
         className="h-[360px] w-full touch-none md:h-[520px]"
-        aria-label="Golden ratio visualization"
+        aria-label={label}
       />
     </div>
   );
