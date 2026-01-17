@@ -25,6 +25,10 @@ export default function ThreePhiScene() {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio || 1);
     renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.domElement.style.pointerEvents = "none";
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.inset = "0";
+    renderer.domElement.style.zIndex = "0";
     container.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
@@ -123,12 +127,12 @@ export default function ThreePhiScene() {
   return (
     <div
       ref={containerRef}
-      className="glass-card glass-card--featured relative h-[360px] w-full overflow-hidden rounded-3xl"
+      className="glass-card glass-card--featured pointer-events-none relative h-[360px] w-full overflow-hidden rounded-3xl"
     >
       <div className="chip absolute left-5 top-5 z-10 rounded-full px-4 py-1 text-xs tracking-[0.3em]">
         Phi Visualization v2
       </div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12)_0%,transparent_55%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12)_0%,transparent_55%)]" />
     </div>
   );
 }
