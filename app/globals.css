@@ -73,6 +73,15 @@ body {
     text-transform: uppercase;
   }
 
+  .atlas-badge {
+    border: 1px solid var(--border);
+    background: linear-gradient(140deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    color: var(--fg);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.08);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+  }
+
   .glass-card {
     border: 1px solid var(--border);
     background: linear-gradient(160deg, var(--card), var(--card2));

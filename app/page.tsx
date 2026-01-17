@@ -1,3 +1,4 @@
+import Link from "next/link";
 import FeatureCard from "@/components/FeatureCard";
 import MetricCard from "@/components/MetricCard";
 import ThreePhiScene from "@/components/ThreePhiScene";
@@ -45,6 +46,15 @@ export default function Home() {
   return (
     <div className="min-h-screen text-[var(--fg)]">
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-16 lg:px-8">
+        <header className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-[var(--muted)]">
+          <span>Ratio Engine</span>
+          <Link
+            href="/atlas"
+            className="atlas-badge rounded-full px-4 py-2 text-[0.65rem]"
+          >
+            Atlas
+          </Link>
+        </header>
         <section className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div className="space-y-8">
             <div className="chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs tracking-[0.25em]">
