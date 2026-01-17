@@ -1,52 +1,46 @@
 import * as THREE from "three";
 
-import type { CreateSceneParams, CreateSceneResult, SceneSchema } from "@/app/lib/three/types";
+import type {
+  CreateSceneParams,
+  CreateSceneResult,
+  SceneSchema,
+} from "@/app/lib/three/types";
 import { disposeObject } from "@/app/lib/three/utils";
 
 export type FibonacciSceneParams = {
-  mode: "lattice" | "spiral" | "rectangles";
+  morph: number;
   terms: number;
-  spiralTightness: number;
 };
 
 export const defaultParams: FibonacciSceneParams = {
-  mode: "spiral",
-  terms: 8,
-  spiralTightness: 0.75,
+  morph: 0.45,
+  terms: 12,
 };
 
 export const paramSchema: SceneSchema = [
   {
-    type: "select",
-    id: "mode",
-    label: "Mode",
-    options: [
-      { value: "lattice", label: "Lattice" },
-      { value: "spiral", label: "Spiral" },
-      { value: "rectangles", label: "Rectangles" },
-    ],
+    type: "range",
+    id: "morph",
+    label: "Morph",
+    min: 0,
+    max: 1,
+    step: 0.02,
+    formatValue: (value) => value.toFixed(2),
   },
   {
     type: "range",
     id: "terms",
     label: "Terms",
-    min: 4,
-    max: 12,
+    min: 6,
+    max: 16,
     step: 1,
     formatValue: (value) => Math.round(value).toString(),
   },
-  {
-    type: "range",
-    id: "spiralTightness",
-    label: "Spiral Tightness",
-    min: 0.4,
-    max: 1.2,
-    step: 0.05,
-    formatValue: (value) => value.toFixed(2),
-  },
 ];
 
-const buildFibonacci = (terms: number) => {
+const GOLDEN_ANGLE = THREE.MathUtils.degToRad(137.507764);
+
+export const buildFibonacci = (terms: number) => {
   const sequence = [1, 1];
   while (sequence.length < terms) {
     const length = sequence.length;
@@ -55,85 +49,41 @@ const buildFibonacci = (terms: number) => {
   return sequence;
 };
 
-const buildRectangleFrames = (terms: number, scale: number) => {
-  const sequence = buildFibonacci(terms);
-  const positions: number[] = [];
-  let x = 0;
-  let y = 0;
-  let direction = 0;
-
-  for (let i = 0; i < sequence.length; i += 1) {
-    const size = sequence[i] * scale;
-    const halfSize = size / 2;
-    const centerX = x + (direction === 0 ? halfSize : direction === 2 ? -halfSize : 0);
-    const centerY = y + (direction === 1 ? halfSize : direction === 3 ? -halfSize : 0);
-    const left = centerX - halfSize;
-    const right = centerX + halfSize;
-    const bottom = centerY - halfSize;
-    const top = centerY + halfSize;
-    positions.push(
-      left,
-      bottom,
-      0,
-      right,
-      bottom,
-      0,
-      right,
-      bottom,
-      0,
-      right,
-      top,
-      0,
-      right,
-      top,
-      0,
-      left,
-      top,
-      0,
-      left,
-      top,
-      0,
-      left,
-      bottom,
-      0,
-    );
-
-    if (direction === 0) {
-      x += size;
-    } else if (direction === 1) {
-      y += size;
-    } else if (direction === 2) {
-      x -= size;
-    } else {
-      y -= size;
-    }
-    direction = (direction + 1) % 4;
+const buildTimelinePositions = (
+  sequence: number[],
+  spacing: number,
+  heightScale: number,
+) => {
+  const count = sequence.length;
+  const positions = new Float32Array(count * 3);
+  const maxValue = Math.max(...sequence);
+  for (let i = 0; i < count; i += 1) {
+    const t = count === 1 ? 0 : i / (count - 1);
+    const x = (t - 0.5) * spacing * (count - 1);
+    const y = ((sequence[i] / maxValue) - 0.5) * heightScale;
+    positions[i * 3] = x;
+    positions[i * 3 + 1] = y;
+    positions[i * 3 + 2] = 0;
   }
-  return new Float32Array(positions);
+  return positions;
 };
 
-const buildSpiral = (terms: number, scale: number, tightness: number) => {
-  const sequence = buildFibonacci(terms);
-  const points: THREE.Vector3[] = [];
-  let angle = 0;
-  for (let i = 0; i < sequence.length; i += 1) {
-    const radius = sequence[i] * scale * tightness;
-    const x = Math.cos(angle) * radius;
-    const y = Math.sin(angle) * radius;
-    points.push(new THREE.Vector3(x, y, 0));
-    angle += Math.PI / 2;
+const buildSpiralPositions = (
+  sequence: number[],
+  radiusScale: number,
+) => {
+  const count = sequence.length;
+  const positions = new Float32Array(count * 3);
+  const maxValue = Math.max(...sequence);
+  for (let i = 0; i < count; i += 1) {
+    const value = sequence[i];
+    const radius = Math.sqrt(value / maxValue) * radiusScale;
+    const angle = i * GOLDEN_ANGLE;
+    positions[i * 3] = Math.cos(angle) * radius;
+    positions[i * 3 + 1] = Math.sin(angle) * radius;
+    positions[i * 3 + 2] = (i / Math.max(1, count - 1)) * 0.45;
   }
-  return points;
-};
-
-const buildLattice = (size: number, spacing: number) => {
-  const positions: number[] = [];
-  for (let x = -size; x <= size; x += 1) {
-    for (let y = -size; y <= size; y += 1) {
-      positions.push(x * spacing, y * spacing, 0);
-    }
-  }
-  return new Float32Array(positions);
+  return positions;
 };
 
 export const createScene = (
@@ -141,7 +91,11 @@ export const createScene = (
   options: FibonacciSceneParams,
 ): CreateSceneResult => {
   const { canvas, width, height, dpr, isMobile, detailLevel } = params;
-  const { mode, terms, spiralTightness } = options;
+  const { morph, terms } = options;
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#050505");
@@ -158,7 +112,7 @@ export const createScene = (
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 80);
-  camera.position.set(0, 0, 7);
+  camera.position.set(0, 0.2, 7);
 
   const group = new THREE.Group();
   scene.add(group);
@@ -170,65 +124,98 @@ export const createScene = (
   rim.position.set(-4, -2, 4);
   scene.add(ambient, key, rim);
 
-  const scale = isMobile ? 0.13 : 0.16;
+  const sequence = buildFibonacci(Math.max(4, Math.floor(terms * detailLevel)));
+  const spacing = isMobile ? 0.24 : 0.28;
+  const heightScale = isMobile ? 0.9 : 1.2;
+  const radiusScale = isMobile ? 1.6 : 2.1;
 
-  const latticeGeometry = new THREE.BufferGeometry();
-  latticeGeometry.setAttribute(
+  const timelinePositions = buildTimelinePositions(sequence, spacing, heightScale);
+  const spiralPositions = buildSpiralPositions(sequence, radiusScale);
+
+  const pointGeometry = new THREE.BufferGeometry();
+  const morphPositions = new Float32Array(sequence.length * 3);
+  pointGeometry.setAttribute(
     "position",
-    new THREE.BufferAttribute(buildLattice(6, scale * 1.3), 3),
+    new THREE.BufferAttribute(morphPositions, 3),
   );
-  const latticeMaterial = new THREE.PointsMaterial({
-    color: 0xffffff,
-    size: isMobile ? 0.03 : 0.025,
-    opacity: 0.35,
+  const pointsMaterial = new THREE.PointsMaterial({
+    color: 0xf5f5f5,
+    size: isMobile ? 0.045 : 0.04,
+    opacity: 0.75,
     transparent: true,
     depthWrite: false,
   });
-  const latticePoints = new THREE.Points(latticeGeometry, latticeMaterial);
-  group.add(latticePoints);
+  const points = new THREE.Points(pointGeometry, pointsMaterial);
+  group.add(points);
 
-  const spiralPoints = buildSpiral(
-    Math.max(4, Math.floor(terms * detailLevel)),
-    scale * 6,
-    spiralTightness,
+  const lineGeometry = new THREE.BufferGeometry();
+  const linePositions = new Float32Array(sequence.length * 3);
+  lineGeometry.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
+  const line = new THREE.Line(
+    lineGeometry,
+    new THREE.LineBasicMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.4 }),
   );
-  const spiralGeometry = new THREE.BufferGeometry().setFromPoints(spiralPoints);
-  const spiralLine = new THREE.Line(
-    spiralGeometry,
-    new THREE.LineBasicMaterial({ color: 0xf5f5f5, transparent: true, opacity: 0.8 }),
-  );
-  group.add(spiralLine);
+  group.add(line);
 
-  const rectangleGeometry = new THREE.BufferGeometry();
-  rectangleGeometry.setAttribute(
+  const highlightGeometry = new THREE.BufferGeometry();
+  const highlightPosition = new Float32Array(3);
+  highlightGeometry.setAttribute(
     "position",
-    new THREE.BufferAttribute(
-      buildRectangleFrames(
-        Math.max(4, Math.floor(terms * detailLevel)),
-        scale * 1.8,
-      ),
-      3,
-    ),
+    new THREE.BufferAttribute(highlightPosition, 3),
   );
-  const rectangleLine = new THREE.LineSegments(
-    rectangleGeometry,
-    new THREE.LineBasicMaterial({ color: 0xe5e5e5, transparent: true, opacity: 0.6 }),
+  const highlight = new THREE.Points(
+    highlightGeometry,
+    new THREE.PointsMaterial({
+      color: 0xbfd4ff,
+      size: isMobile ? 0.08 : 0.075,
+      opacity: 0.95,
+      transparent: true,
+      depthWrite: false,
+    }),
   );
-  group.add(rectangleLine);
-
-  const updateVisibility = () => {
-    latticePoints.visible = mode === "lattice";
-    spiralLine.visible = mode === "spiral";
-    rectangleLine.visible = mode === "rectangles";
-  };
-  updateVisibility();
+  group.add(highlight);
 
   let elapsed = 0;
   const update = (delta: number) => {
-    elapsed += delta;
-    group.rotation.y = Math.sin(elapsed * 0.2) * 0.1;
-    group.rotation.x = Math.cos(elapsed * 0.18) * 0.06;
-    updateVisibility();
+    if (!prefersReducedMotion) {
+      elapsed += delta;
+    }
+    const morphT = THREE.MathUtils.clamp(morph, 0, 1);
+    for (let i = 0; i < sequence.length; i += 1) {
+      const idx = i * 3;
+      morphPositions[idx] = THREE.MathUtils.lerp(
+        timelinePositions[idx],
+        spiralPositions[idx],
+        morphT,
+      );
+      morphPositions[idx + 1] = THREE.MathUtils.lerp(
+        timelinePositions[idx + 1],
+        spiralPositions[idx + 1],
+        morphT,
+      );
+      morphPositions[idx + 2] = THREE.MathUtils.lerp(
+        timelinePositions[idx + 2],
+        spiralPositions[idx + 2],
+        morphT,
+      );
+      linePositions[idx] = morphPositions[idx];
+      linePositions[idx + 1] = morphPositions[idx + 1];
+      linePositions[idx + 2] = morphPositions[idx + 2];
+    }
+    pointGeometry.attributes.position.needsUpdate = true;
+    lineGeometry.attributes.position.needsUpdate = true;
+
+    const focusIndex = Math.min(
+      sequence.length - 1,
+      Math.round(morphT * (sequence.length - 1)),
+    );
+    highlightPosition[0] = morphPositions[focusIndex * 3];
+    highlightPosition[1] = morphPositions[focusIndex * 3 + 1];
+    highlightPosition[2] = morphPositions[focusIndex * 3 + 2];
+    highlightGeometry.attributes.position.needsUpdate = true;
+
+    group.rotation.y = prefersReducedMotion ? 0 : Math.sin(elapsed * 0.2) * 0.08;
+    group.rotation.x = prefersReducedMotion ? 0 : Math.cos(elapsed * 0.18) * 0.05;
     renderer.render(scene, camera);
   };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import type { CreateScene } from "@/app/lib/three/types";
 import type { RenderQuality } from "@/app/lib/three/types";
@@ -10,6 +11,7 @@ type ThreeSceneCanvasProps = {
   className?: string;
   renderQuality?: RenderQuality;
   label?: string;
+  children?: ReactNode;
 };
 
 const getCanvasSize = (element: HTMLElement) => {
@@ -25,6 +27,7 @@ export default function ThreeSceneCanvas({
   className,
   renderQuality = "medium",
   label = "Ratio visualization",
+  children,
 }: ThreeSceneCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -131,6 +134,7 @@ export default function ThreeSceneCanvas({
         className="h-[360px] w-full touch-none md:h-[520px]"
         aria-label={label}
       />
+      {children}
     </div>
   );
 }

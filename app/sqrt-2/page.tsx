@@ -13,8 +13,8 @@ export default function SqrtTwoPage() {
           </h1>
           <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
             Root-2 rectangles scale by their diagonal, a system used in ISO
-            paper sizes. This scene animates recursive square splits and a
-            folding proof to keep the geometry tactile and legible.
+            paper sizes. This scene animates a folding square and recursive
+            tiling to keep the geometry tactile and legible.
           </p>
         </header>
 
@@ -27,8 +27,8 @@ export default function SqrtTwoPage() {
               </h2>
               <p className="mt-3 leading-6">
                 A unit square’s diagonal measures √2, forming the long side of a
-                root-2 rectangle. Recursive tiling shows how squares chain
-                together without breaking the proportion.
+                root-2 rectangle. Recursive frames show how the ratio repeats
+                under scaling.
               </p>
             </div>
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
@@ -36,8 +36,8 @@ export default function SqrtTwoPage() {
                 Interaction
               </h2>
               <p className="mt-3 leading-6">
-                Adjust the fold to illustrate the diagonal transformation and
-                animate subdivisions to emphasize the repeating √2 scaling.
+                Switch between proof and aesthetic modes for slower or faster
+                pacing, and adjust the fold to map the square into √2.
               </p>
             </div>
           </div>

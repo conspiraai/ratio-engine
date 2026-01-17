@@ -12,9 +12,9 @@ export default function FibonacciPage() {
             Discrete growth that turns into spirals.
           </h1>
           <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-            The Fibonacci sequence drives natural growth patterns. Switch
-            between lattice points, rectangle recursion, and spiral motion to
-            see the sequence spatially.
+            The Fibonacci sequence drives natural growth patterns. Morph the
+            sequence timeline into its spiral arrangement to watch discrete
+            terms become geometry.
           </p>
         </header>
 
@@ -26,9 +26,9 @@ export default function FibonacciPage() {
                 Math Notes
               </h2>
               <p className="mt-3 leading-6">
-                Each term is the sum of its two predecessors, giving rise to
-                self-similar rectangles and spirals. Scaling by successive
-                terms approximates the golden ratio.
+                Each term is the sum of its two predecessors, giving rise to a
+                spiral growth rule. Mapping terms onto polar angles visualizes
+                the same proportional expansion.
               </p>
             </div>
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
@@ -36,8 +36,8 @@ export default function FibonacciPage() {
                 Interaction
               </h2>
               <p className="mt-3 leading-6">
-                Increase the term count to watch the spiral refine, or switch
-                modes to compare lattice, spiral, and rectangle recursion.
+                Use the morph slider to move between the discrete sequence and
+                its spiral form, and increase term count to extend the readout.
               </p>
             </div>
           </div>
