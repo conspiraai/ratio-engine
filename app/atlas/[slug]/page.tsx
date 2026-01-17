@@ -1,13 +1,28 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
 import MarkdownContent from "@/app/components/atlas/MarkdownContent";
-import PhiScene from "@/app/components/atlas/PhiScene";
-import PiScene from "@/app/components/atlas/PiScene";
-import PerfectFifthScene from "@/app/components/atlas/PerfectFifthScene";
-import SilverScene from "@/app/components/atlas/SilverScene";
-import Sqrt2Scene from "@/app/components/atlas/Sqrt2Scene";
-import Sqrt3Scene from "@/app/components/atlas/Sqrt3Scene";
 import { getRatioBySlug } from "@/app/lib/atlas/ratios";
+
+const PhiScene = dynamic(() => import("@/app/components/atlas/PhiScene"), {
+  ssr: false,
+});
+const PiScene = dynamic(() => import("@/app/components/atlas/PiScene"), {
+  ssr: false,
+});
+const PerfectFifthScene = dynamic(
+  () => import("@/app/components/atlas/PerfectFifthScene"),
+  { ssr: false },
+);
+const SilverScene = dynamic(() => import("@/app/components/atlas/SilverScene"), {
+  ssr: false,
+});
+const Sqrt2Scene = dynamic(() => import("@/app/components/atlas/Sqrt2Scene"), {
+  ssr: false,
+});
+const Sqrt3Scene = dynamic(() => import("@/app/components/atlas/Sqrt3Scene"), {
+  ssr: false,
+});
 
 const toAnchorId = (value: string) =>
   value
