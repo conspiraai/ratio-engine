@@ -13,8 +13,8 @@ export default function PhiPage() {
           </h1>
           <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
             The golden ratio governs spirals in nature and harmonic proportion
-            in design. Here it becomes a phyllotaxis field with optional golden
-            rectangle recursion, rendered as a glassy, luminous artifact.
+            in design. Here it becomes a phyllotaxis field with golden rectangle
+            recursion, rendered as a glassy, luminous artifact.
           </p>
         </header>
 
@@ -37,9 +37,9 @@ export default function PhiPage() {
                 Interaction
               </h2>
               <p className="mt-3 leading-6">
-                Increase density to reveal the sunflower-like packing. Drift
-                mode introduces subtle parameter perturbations while preserving
-                structural stability.
+                Increase density to reveal the sunflower-like packing. Adjust
+                recursion depth with the slider or scroll wheel to deepen the
+                golden frame stack.
               </p>
             </div>
           </div>

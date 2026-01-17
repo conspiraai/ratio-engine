@@ -1,71 +1,70 @@
 import * as THREE from "three";
 
-import type { CreateSceneParams, CreateSceneResult, SceneSchema } from "@/app/lib/three/types";
+import type {
+  CreateSceneParams,
+  CreateSceneResult,
+  SceneSchema,
+} from "@/app/lib/three/types";
 import { disposeObject } from "@/app/lib/three/utils";
 
 export type Sqrt2SceneParams = {
-  depth: number;
+  mode: "proof" | "aesthetic";
   foldAmount: number;
-  animateSplit: boolean;
 };
 
 export const defaultParams: Sqrt2SceneParams = {
-  depth: 6,
+  mode: "proof",
   foldAmount: 0.6,
-  animateSplit: true,
 };
 
 export const paramSchema: SceneSchema = [
   {
-    type: "range",
-    id: "depth",
-    label: "Subdivision Depth",
-    min: 2,
-    max: 10,
-    step: 1,
-    formatValue: (value) => Math.round(value).toString(),
+    type: "select",
+    id: "mode",
+    label: "Mode",
+    options: [
+      { value: "proof", label: "Geometry Proof" },
+      { value: "aesthetic", label: "Aesthetic" },
+    ],
   },
   {
     type: "range",
     id: "foldAmount",
-    label: "Paper Fold",
+    label: "Fold / Scale",
     min: 0,
     max: 1,
     step: 0.02,
     formatValue: (value) => value.toFixed(2),
   },
-  {
-    type: "toggle",
-    id: "animateSplit",
-    label: "Animate Splits",
-  },
 ];
 
-const buildSubdivisionLines = (width: number, height: number, depth: number) => {
-  const positions: number[] = [];
-  let x = -width / 2;
-  let y = -height / 2;
-  let w = width;
-  let h = height;
+const buildRoot2Frames = (
+  width: number,
+  height: number,
+  depth: number,
+  zSpacing: number,
+) => {
+  const group = new THREE.Group();
+  const material = new THREE.LineBasicMaterial({
+    color: 0xe5e5e5,
+    transparent: true,
+    opacity: 0.5,
+  });
 
   for (let i = 0; i < depth; i += 1) {
-    const size = Math.min(w, h);
-    if (size <= 0) {
-      break;
-    }
-    if (w > h) {
-      const splitX = x + size;
-      positions.push(splitX, y, 0, splitX, y + h, 0);
-      x += size;
-      w -= size;
-    } else {
-      const splitY = y + size;
-      positions.push(x, splitY, 0, x + w, splitY, 0);
-      y += size;
-      h -= size;
-    }
+    const scale = 1 / Math.pow(Math.SQRT2, i);
+    const w = width * scale;
+    const h = height * scale;
+    const geometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-w / 2, -h / 2, -i * zSpacing),
+      new THREE.Vector3(w / 2, -h / 2, -i * zSpacing),
+      new THREE.Vector3(w / 2, h / 2, -i * zSpacing),
+      new THREE.Vector3(-w / 2, h / 2, -i * zSpacing),
+    ]);
+    group.add(new THREE.LineLoop(geometry, material));
   }
-  return positions;
+
+  return group;
 };
 
 export const createScene = (
@@ -73,7 +72,11 @@ export const createScene = (
   options: Sqrt2SceneParams,
 ): CreateSceneResult => {
   const { canvas, width, height, dpr, isMobile, detailLevel } = params;
-  const { depth, foldAmount, animateSplit } = options;
+  const { mode, foldAmount } = options;
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#050505");
@@ -90,7 +93,7 @@ export const createScene = (
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 50);
-  camera.position.set(0, 0.4, 5.8);
+  camera.position.set(0, 0.25, 6);
 
   const group = new THREE.Group();
   scene.add(group);
@@ -117,83 +120,62 @@ export const createScene = (
   );
   group.add(frame);
 
-  const subdivisionGeometry = new THREE.BufferGeometry();
-  subdivisionGeometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(
-      buildSubdivisionLines(
-        baseWidth,
-        baseHeight,
-        Math.max(2, Math.floor(depth * detailLevel)),
-      ),
-      3,
-    ),
-  );
-  const subdivisionMaterial = new THREE.LineBasicMaterial({
-    color: 0x8c8c8c,
-    transparent: true,
-    opacity: 0.5,
-  });
-  const subdivisions = new THREE.LineSegments(subdivisionGeometry, subdivisionMaterial);
-  group.add(subdivisions);
-
-  const squareSize = baseHeight;
-  const squareGeometry = new THREE.PlaneGeometry(squareSize, squareSize);
+  const squareGeometry = new THREE.PlaneGeometry(baseHeight, baseHeight);
   const squareMaterial = new THREE.MeshStandardMaterial({
     color: 0x101013,
-    roughness: 0.45,
-    metalness: 0.3,
+    roughness: 0.35,
+    metalness: 0.35,
     transparent: true,
-    opacity: 0.5,
+    opacity: 0.55,
     side: THREE.DoubleSide,
   });
+  const transformGroup = new THREE.Group();
   const baseSquare = new THREE.Mesh(squareGeometry, squareMaterial);
-  baseSquare.position.x = -baseWidth / 2 + squareSize / 2;
-  baseSquare.position.z = 0.05;
-  group.add(baseSquare);
+  transformGroup.add(baseSquare);
 
-  const foldPivot = new THREE.Group();
-  foldPivot.position.x = -baseWidth / 2 + squareSize;
-  group.add(foldPivot);
-
-  const foldSquare = new THREE.Mesh(squareGeometry, squareMaterial.clone());
-  foldSquare.position.x = -squareSize / 2;
-  foldSquare.position.z = 0.08;
-  foldPivot.add(foldSquare);
+  const squareFrame = new THREE.LineLoop(
+    new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-baseHeight / 2, -baseHeight / 2, 0.03),
+      new THREE.Vector3(baseHeight / 2, -baseHeight / 2, 0.03),
+      new THREE.Vector3(baseHeight / 2, baseHeight / 2, 0.03),
+      new THREE.Vector3(-baseHeight / 2, baseHeight / 2, 0.03),
+    ]),
+    new THREE.LineBasicMaterial({ color: 0xaaaaaa, opacity: 0.6, transparent: true }),
+  );
+  transformGroup.add(squareFrame);
 
   const diagonalGeometry = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(
-      -baseWidth / 2,
-      -squareSize / 2,
-      0.12,
-    ),
-    new THREE.Vector3(
-      -baseWidth / 2 + squareSize,
-      squareSize / 2,
-      0.12,
-    ),
+    new THREE.Vector3(-baseHeight / 2, -baseHeight / 2, 0.08),
+    new THREE.Vector3(baseHeight / 2, baseHeight / 2, 0.08),
   ]);
   const diagonal = new THREE.Line(
     diagonalGeometry,
-    new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.6, transparent: true }),
+    new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.7, transparent: true }),
   );
-  group.add(diagonal);
+  transformGroup.add(diagonal);
+  group.add(transformGroup);
+
+  const depth = mode === "proof" ? 4 : 7;
+  const frameDepth = Math.max(2, Math.floor(depth * detailLevel));
+  const frameStack = buildRoot2Frames(baseWidth, baseHeight, frameDepth, 0.12);
+  frameStack.position.z = -0.4;
+  frameStack.position.y = 0.05;
+  group.add(frameStack);
 
   let elapsed = 0;
-  const totalSegments = subdivisionGeometry.getAttribute("position").count;
   const update = (delta: number) => {
-    elapsed += delta;
-    const progress = animateSplit
-      ? Math.sin(elapsed * 0.6) * 0.5 + 0.5
-      : 1;
-    const drawCount = Math.max(2, Math.floor(totalSegments * progress));
-    subdivisionGeometry.setDrawRange(0, drawCount);
+    if (!prefersReducedMotion) {
+      elapsed += delta;
+    }
+    const speed = mode === "proof" ? 0.2 : 0.6;
+    const motion = prefersReducedMotion ? 0 : elapsed * speed;
 
-    foldPivot.rotation.y = THREE.MathUtils.lerp(0, Math.PI / 4, foldAmount);
-    foldPivot.rotation.z = THREE.MathUtils.lerp(0, -Math.PI / 10, foldAmount);
+    transformGroup.scale.x = THREE.MathUtils.lerp(1, Math.SQRT2, foldAmount);
+    transformGroup.rotation.y = THREE.MathUtils.lerp(0, Math.PI / 10, foldAmount);
+    transformGroup.rotation.z = THREE.MathUtils.lerp(0, -Math.PI / 16, foldAmount);
 
-    group.rotation.y = Math.sin(elapsed * 0.2) * 0.08;
-    group.rotation.x = Math.cos(elapsed * 0.16) * 0.04;
+    group.rotation.y = Math.sin(motion) * (mode === "proof" ? 0.06 : 0.12);
+    group.rotation.x = Math.cos(motion * 0.8) * (mode === "proof" ? 0.04 : 0.08);
 
     renderer.render(scene, camera);
   };

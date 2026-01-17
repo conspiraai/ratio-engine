@@ -36,8 +36,8 @@ export default function PiPage() {
                 Interaction
               </h2>
               <p className="mt-3 leading-6">
-                Use the side count to watch convergence and adjust the
-                interference field to bring out the depth of the ring.
+                Use the side count to watch convergence and toggle unwrapping
+                to compare the circumference against a straight measure.
               </p>
             </div>
           </div>
