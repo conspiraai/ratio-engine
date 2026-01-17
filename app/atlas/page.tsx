@@ -28,18 +28,24 @@ export default function AtlasIndexPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--muted)]">
-                    {ratio.name}
+                    {ratio.title}
                   </p>
                   <h2 className="mt-3 text-3xl font-semibold">
                     {ratio.symbol}
                   </h2>
+                  <p className="mt-2 text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                    {ratio.value}
+                  </p>
                 </div>
                 <div className="atlas-badge rounded-full px-4 py-2 text-[0.65rem]">
                   Atlas Entry
                 </div>
               </div>
-              <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
-                {ratio.shortSummary}
+              <p className="mt-4 text-sm uppercase tracking-[0.28em] text-[var(--muted)]">
+                {ratio.tagline}
+              </p>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                {ratio.summary}
               </p>
               <div className="mt-5 flex flex-wrap gap-2 text-[0.65rem] uppercase tracking-[0.24em] text-[var(--muted)]">
                 {ratio.categories.map((tag) => (

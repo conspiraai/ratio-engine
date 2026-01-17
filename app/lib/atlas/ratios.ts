@@ -77,13 +77,14 @@ type RatioVisualSpec =
 export type RatioEntry = {
   id: string;
   slug: string;
-  name: string;
+  title: string;
+  tagline: string;
   symbol: string;
-  approx: string;
+  value: string;
   exactForm: string;
   categories: string[];
-  shortSummary: string;
-  deepSections: RatioSection[];
+  summary: string;
+  sections: RatioSection[];
   references: RatioReference[];
   visualSpec: RatioVisualSpec;
 };
@@ -92,14 +93,15 @@ export const RATIOS: RatioEntry[] = [
   {
     id: "phi",
     slug: "phi",
-    name: "Phi",
+    title: "Phi",
+    tagline: "Harmonic proportion guiding recursive growth.",
     symbol: "φ",
-    approx: "1.618033988…",
+    value: "1.618033988…",
     exactForm: "(1 + √5) / 2",
     categories: ["irrational", "geometry", "growth", "design"],
-    shortSummary:
+    summary:
       "The golden ratio: a self-referential proportion where the whole relates to the larger part as the larger relates to the smaller.",
-    deepSections: [
+    sections: [
       {
         title: "Mathematical identity",
         body:
@@ -205,14 +207,15 @@ export const RATIOS: RatioEntry[] = [
   {
     id: "silver",
     slug: "silver-ratio",
-    name: "Silver Ratio",
+    title: "Silver Ratio",
+    tagline: "Root-two proportion for resilient, modular grids.",
     symbol: "δs",
-    approx: "2.414213562…",
+    value: "2.414213562…",
     exactForm: "1 + √2",
     categories: ["irrational", "geometry", "design", "architecture"],
-    shortSummary:
+    summary:
       "The silver ratio complements φ, anchoring root-2 rectangles and modular architectures with a strong, calm proportion.",
-    deepSections: [
+    sections: [
       {
         title: "Mathematical definition",
         body:
@@ -285,14 +288,15 @@ export const RATIOS: RatioEntry[] = [
   {
     id: "sqrt2",
     slug: "sqrt-2",
-    name: "Root Two",
+    title: "Root Two",
+    tagline: "Diagonal measure for scaling systems and grids.",
     symbol: "√2",
-    approx: "1.414213562…",
+    value: "1.414213562…",
     exactForm: "√2",
     categories: ["irrational", "geometry", "measurement"],
-    shortSummary:
+    summary:
       "The diagonal of a unit square and the backbone of root-2 scaling systems used in measurement and design.",
-    deepSections: [
+    sections: [
       {
         title: "Mathematical definition",
         body:
@@ -364,14 +368,15 @@ export const RATIOS: RatioEntry[] = [
   {
     id: "sqrt3",
     slug: "sqrt-3",
-    name: "Root Three",
+    title: "Root Three",
+    tagline: "Triangular lattice scale for spatial packing.",
     symbol: "√3",
-    approx: "1.732050808…",
+    value: "1.732050808…",
     exactForm: "√3",
     categories: ["irrational", "geometry", "lattice"],
-    shortSummary:
+    summary:
       "The diagonal of a unit cube and the scale factor behind hexagonal and triangular lattices.",
-    deepSections: [
+    sections: [
       {
         title: "Mathematical definition",
         body:
@@ -443,14 +448,15 @@ export const RATIOS: RatioEntry[] = [
   {
     id: "pi",
     slug: "pi",
-    name: "Pi",
+    title: "Pi",
+    tagline: "Circular constant shaping motion and waves.",
     symbol: "π",
-    approx: "3.141592653…",
+    value: "3.141592653…",
     exactForm: "circumference / diameter",
     categories: ["transcendental", "geometry", "analysis"],
-    shortSummary:
+    summary:
       "The constant linking a circle's circumference to its diameter, anchoring periodic motion and wave geometry.",
-    deepSections: [
+    sections: [
       {
         title: "Mathematical definition",
         body:
@@ -522,14 +528,15 @@ export const RATIOS: RatioEntry[] = [
   {
     id: "perfect-fifth",
     slug: "perfect-fifth",
-    name: "Perfect Fifth",
+    title: "Perfect Fifth",
+    tagline: "Consonant 3:2 ratio for harmonic alignment.",
     symbol: "3:2",
-    approx: "1.5",
+    value: "1.5",
     exactForm: "3 / 2",
     categories: ["rational", "music", "architecture"],
-    shortSummary:
+    summary:
       "A foundational musical interval: a simple 3:2 ratio used in tuning systems and harmonic architecture.",
-    deepSections: [
+    sections: [
       {
         title: "Mathematical definition",
         body:
