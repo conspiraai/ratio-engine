@@ -27,6 +27,11 @@
   box-sizing: border-box;
 }
 
+button,
+a {
+  touch-action: manipulation;
+}
+
 body {
   min-height: 100vh;
   background-color: var(--bg);
@@ -62,6 +67,7 @@ body {
   color: var(--fg);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   text-rendering: optimizeLegibility;
+  touch-action: manipulation;
 }
 
 @layer components {
@@ -174,6 +180,11 @@ body {
   .icon-frame {
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.06);
+  }
+
+  .atlas-canvas {
+    pointer-events: auto;
+    touch-action: none;
   }
 }
 

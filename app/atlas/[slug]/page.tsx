@@ -61,22 +61,25 @@ export default function AtlasEntryPage({
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--muted)]">
                 Ratio Entry
               </p>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                {entry.tagline}
+              </p>
               <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-                {entry.name}
+                {entry.title}
               </h1>
               <div className="flex flex-wrap items-baseline gap-4">
                 <span className="text-5xl font-semibold text-[var(--fg)]">
                   {entry.symbol}
                 </span>
                 <span className="text-sm uppercase tracking-[0.3em] text-[var(--muted)]">
-                  {entry.approx}
+                  {entry.value}
                 </span>
                 <span className="text-sm text-[var(--muted)]">
                   {entry.exactForm}
                 </span>
               </div>
               <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-                {entry.shortSummary}
+                {entry.summary}
               </p>
             </div>
             <div className="flex flex-wrap gap-2 text-[0.7rem] uppercase tracking-[0.24em] text-[var(--muted)]">
@@ -97,7 +100,7 @@ export default function AtlasEntryPage({
           <aside className="space-y-4 text-xs uppercase tracking-[0.35em] text-[var(--muted)] lg:sticky lg:top-10 lg:self-start">
             <p className="text-[var(--fg)]">Atlas Index</p>
             <nav className="flex flex-col gap-3 text-[0.65rem]">
-              {entry.deepSections.map((section) => {
+              {entry.sections.map((section) => {
                 const anchor = toAnchorId(section.title);
                 return (
                   <a
@@ -113,7 +116,7 @@ export default function AtlasEntryPage({
           </aside>
 
           <main className="space-y-10">
-            {entry.deepSections.map((section) => {
+            {entry.sections.map((section) => {
               const anchor = toAnchorId(section.title);
               return (
                 <section key={section.title} id={anchor} className="space-y-4">

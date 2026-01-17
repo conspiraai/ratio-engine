@@ -71,12 +71,12 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row">
-              <button className="btn-primary px-6 py-3 text-sm">
+              <Link href="/atlas/phi" className="btn-primary px-6 py-3 text-sm">
                 Launch diagnostic
-              </button>
-              <button className="btn-secondary px-6 py-3 text-sm">
+              </Link>
+              <Link href="/atlas" className="btn-secondary px-6 py-3 text-sm">
                 View engine logs
-              </button>
+              </Link>
             </div>
           </div>
           <div className="relative z-0">
