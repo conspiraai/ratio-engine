@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Suspense, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 
 type AtlasSceneFrameProps = {
@@ -20,6 +20,13 @@ export default function AtlasSceneFrame({
   cameraPosition = [0, 0, 5],
 }: AtlasSceneFrameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [eventSource, setEventSource] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setEventSource(containerRef.current);
+    }
+  }, []);
 
   return (
     <div
@@ -31,7 +38,7 @@ export default function AtlasSceneFrame({
     >
       <Canvas
         className="atlas-canvas h-full w-full"
-        eventSource={containerRef}
+        eventSource={eventSource ?? undefined}
         eventPrefix="client"
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 1.6]}
