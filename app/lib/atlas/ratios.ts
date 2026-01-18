@@ -608,5 +608,21 @@ export const RATIOS: RatioEntry[] = [
   },
 ];
 
-export const getRatioBySlug = (slug: string) =>
-  RATIOS.find((ratio) => ratio.slug === slug);
+const SLUG_ALIASES: Record<string, string> = {
+  "golden-ratio": "phi",
+  golden: "phi",
+  silver: "silver-ratio",
+  silverratio: "silver-ratio",
+  sqrt2: "sqrt-2",
+  sqrt3: "sqrt-3",
+  perfectfifth: "perfect-fifth",
+};
+
+export const normalizeRatioSlug = (slug: string) =>
+  slug.toLowerCase().trim().replace(/[_\s]+/g, "-");
+
+export const getRatioBySlug = (slug: string) => {
+  const normalized = normalizeRatioSlug(slug);
+  const canonical = SLUG_ALIASES[normalized] ?? normalized;
+  return RATIOS.find((ratio) => ratio.slug === canonical);
+};
