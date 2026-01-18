@@ -1,8 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AtlasSceneClient from "@/app/components/atlas/AtlasSceneClient";
+import MathSynchronicities from "@/app/components/atlas/MathSynchronicities";
 import MarkdownContent from "@/app/components/atlas/MarkdownContent";
-import { getRatioBySlug } from "@/app/lib/atlas/ratios";
+import { getRatioBySlug, RATIOS } from "@/app/lib/atlas/ratios";
+import { parseRatioValue } from "@/app/lib/atlas/synchronicities";
+
+export const dynamicParams = false;
+
+export const generateStaticParams = async () =>
+  RATIOS.map((ratio) => ({ slug: ratio.slug }));
 
 const toAnchorId = (value: string) =>
   value
@@ -21,6 +28,8 @@ export default function AtlasEntryPage({
   if (!entry) {
     notFound();
   }
+
+  const numericValue = parseRatioValue(entry.value);
 
   return (
     <div className="min-h-screen px-6 py-16 text-[var(--fg)]">
@@ -76,6 +85,12 @@ export default function AtlasEntryPage({
           <aside className="space-y-4 text-xs uppercase tracking-[0.35em] text-[var(--muted)] lg:sticky lg:top-10 lg:self-start">
             <p className="text-[var(--fg)]">Atlas Index</p>
             <nav className="flex flex-col gap-3 text-[0.65rem]">
+              <a
+                href="#synchronicities"
+                className="transition hover:text-[var(--fg)]"
+              >
+                Mathematical Synchronicities
+              </a>
               {entry.sections.map((section) => {
                 const anchor = toAnchorId(section.title);
                 return (
@@ -92,6 +107,7 @@ export default function AtlasEntryPage({
           </aside>
 
           <main className="space-y-10">
+            <MathSynchronicities value={numericValue} slug={entry.slug} />
             {entry.sections.map((section) => {
               const anchor = toAnchorId(section.title);
               return (
