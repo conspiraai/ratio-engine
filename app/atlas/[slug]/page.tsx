@@ -1,12 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AtlasSceneClient from "@/app/components/atlas/AtlasSceneClient";
 import MarkdownContent from "@/app/components/atlas/MarkdownContent";
-import PhiScene from "@/app/components/atlas/PhiScene";
-import PiScene from "@/app/components/atlas/PiScene";
-import PerfectFifthScene from "@/app/components/atlas/PerfectFifthScene";
-import SilverScene from "@/app/components/atlas/SilverScene";
-import Sqrt2Scene from "@/app/components/atlas/Sqrt2Scene";
-import Sqrt3Scene from "@/app/components/atlas/Sqrt3Scene";
 import { getRatioBySlug } from "@/app/lib/atlas/ratios";
 
 const toAnchorId = (value: string) =>
@@ -26,25 +21,6 @@ export default function AtlasEntryPage({
   if (!entry) {
     notFound();
   }
-
-  const renderScene = () => {
-    switch (entry.visualSpec.sceneId) {
-      case "phi-harmonic-lattice":
-        return <PhiScene entry={entry} />;
-      case "silver-spiral":
-        return <SilverScene entry={entry} />;
-      case "sqrt2-diagonal":
-        return <Sqrt2Scene entry={entry} />;
-      case "sqrt3-lattice":
-        return <Sqrt3Scene entry={entry} />;
-      case "pi-orbit":
-        return <PiScene entry={entry} />;
-      case "perfect-fifth":
-        return <PerfectFifthScene entry={entry} />;
-      default:
-        return null;
-    }
-  };
 
   return (
     <div className="min-h-screen px-6 py-16 text-[var(--fg)]">
@@ -93,7 +69,7 @@ export default function AtlasEntryPage({
               ))}
             </div>
           </div>
-          {renderScene()}
+          <AtlasSceneClient slug={params.slug} />
         </header>
 
         <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
