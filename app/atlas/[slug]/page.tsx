@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AtlasSceneClient from "@/app/components/atlas/AtlasSceneClient";
 import MarkdownContent from "@/app/components/atlas/MarkdownContent";
-import { getRatioBySlug } from "@/app/lib/atlas/ratios";
+import { getRatioBySlug, RATIOS } from "@/app/lib/atlas/ratios";
 
 const toAnchorId = (value: string) =>
   value
@@ -10,6 +10,12 @@ const toAnchorId = (value: string) =>
     .replace(/[^a-z0-9\s-]/g, "")
     .trim()
     .replace(/\s+/g, "-");
+
+export async function generateStaticParams() {
+  return RATIOS.map((ratio) => ({ slug: ratio.slug }));
+}
+
+export const dynamicParams = false;
 
 export default function AtlasEntryPage({
   params,
