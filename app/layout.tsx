@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
+import Providers from "./providers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,7 +33,7 @@ export default function RootLayout({
           src="https://unpkg.com/three@0.166.1/build/three.min.js"
           strategy="beforeInteractive"
         />
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

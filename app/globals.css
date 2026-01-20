@@ -10,6 +10,7 @@
   --border: rgba(255, 255, 255, 0.12);
   --border2: rgba(255, 255, 255, 0.22);
   --shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  --accent: #ffd700;
   --accent1: #f6f1ff;
   --accent2: #e8fff5;
   --accent3: #fff1e6;
@@ -185,6 +186,34 @@ body {
   .atlas-canvas {
     pointer-events: auto;
     touch-action: none;
+  }
+
+  .ratio-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .sigil-link {
+    border: 1px solid rgba(255, 215, 0, 0.28);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    color: var(--fg);
+    transition: color 0.2s ease, border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .sigil-link:hover {
+    border-color: rgba(255, 215, 0, 0.7);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.25);
+    color: var(--accent);
+  }
+
+  .sigil-chip {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    padding: 0.35rem 0.9rem;
+    letter-spacing: 0.25em;
   }
 }
 
