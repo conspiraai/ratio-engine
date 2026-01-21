@@ -3,12 +3,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { PHI } from "./constants";
 
-type PointerState = {
+export type PointerState = {
   x: number;
   y: number;
 };
 
-type SynchronicityContextValue = {
+export type SynchronicityContextValue = {
   timeBasedRatio: number;
   fibSequence: number[];
   primes: number[];

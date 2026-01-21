@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { PHI } from "@/lib/engine/constants";
+import type { SynchronicityContextValue } from "@/lib/engine/SynchronicityProvider";
 import { useSynchronicity } from "@/lib/engine/SynchronicityProvider";
 
 const GOLD = "#ffd700";
@@ -11,7 +12,7 @@ const clamp = (value: number, min: number, max: number) =>
 
 export default function SynchronicityCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const stateRef = useRef({
+  const stateRef = useRef<SynchronicityContextValue>({
     timeBasedRatio: PHI,
     fibSequence: [1, 1],
     primes: [],
