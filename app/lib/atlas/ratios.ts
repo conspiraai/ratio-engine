@@ -610,19 +610,54 @@ export const RATIOS: RatioEntry[] = [
 
 const SLUG_ALIASES: Record<string, string> = {
   "golden-ratio": "phi",
+  goldenratio: "phi",
   golden: "phi",
   silver: "silver-ratio",
   silverratio: "silver-ratio",
+  "silver-ratio": "silver-ratio",
   sqrt2: "sqrt-2",
+  "sqrt-2": "sqrt-2",
+  "root-two": "sqrt-2",
+  root2: "sqrt-2",
   sqrt3: "sqrt-3",
+  "sqrt-3": "sqrt-3",
+  "root-three": "sqrt-3",
+  root3: "sqrt-3",
   perfectfifth: "perfect-fifth",
+  "perfect-fifth": "perfect-fifth",
+  fifth: "perfect-fifth",
+  "3-2": "perfect-fifth",
+  "3:2": "perfect-fifth",
+  phi: "phi",
+  "phi-constant": "phi",
+  pi: "pi",
+  "pi-constant": "pi",
 };
 
-export const normalizeRatioSlug = (slug: string) =>
-  slug.toLowerCase().trim().replace(/[_\s]+/g, "-");
+export const normalizeRatioSlug = (slug: string) => {
+  const prepared = slug
+    .trim()
+    .toLowerCase()
+    .replace(/φ|ϕ/g, "phi")
+    .replace(/π/g, "pi")
+    .replace(/√\s*2/g, "sqrt-2")
+    .replace(/√\s*3/g, "sqrt-3");
 
-export const getRatioBySlug = (slug: string) => {
+  return prepared
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+};
+
+export const resolveRatioSlug = (slug: string) => {
   const normalized = normalizeRatioSlug(slug);
-  const canonical = SLUG_ALIASES[normalized] ?? normalized;
-  return RATIOS.find((ratio) => ratio.slug === canonical);
+  const canonicalSlug = SLUG_ALIASES[normalized] ?? normalized;
+  const entry = RATIOS.find((ratio) => ratio.slug === canonicalSlug);
+  return { entry, canonicalSlug, normalized };
 };
+
+export const getRatioBySlug = (slug: string) =>
+  resolveRatioSlug(slug).entry;

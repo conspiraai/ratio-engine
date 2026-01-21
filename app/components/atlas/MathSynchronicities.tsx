@@ -66,6 +66,8 @@ export default function MathSynchronicities({
   const [reveal, setReveal] = useState(false);
   const [scanActive, setScanActive] = useState(false);
   const [scanTick, setScanTick] = useState(0);
+  const [collapsed, setCollapsed] = useState(false);
+  const [depth, setDepth] = useState(0);
 
   const data = useMemo(() => buildSynchronicities(value, slug), [value, slug]);
   const seed = useMemo(() => hashSeed(slug), [slug]);
@@ -88,6 +90,22 @@ export default function MathSynchronicities({
     return () => clearInterval(interval);
   }, [scanActive, slug]);
 
+  useEffect(() => {
+    const updateDepth = () => {
+      const height = document.body.scrollHeight - window.innerHeight;
+      if (height <= 0) {
+        setDepth(0);
+        return;
+      }
+      setDepth(Math.min(1, Math.max(0, window.scrollY / height)));
+    };
+
+    window.addEventListener("scroll", updateDepth, { passive: true });
+    updateDepth();
+
+    return () => window.removeEventListener("scroll", updateDepth);
+  }, []);
+
   const scanFocus = useMemo(() => {
     const random = mulberry32(seed + scanTick * 101);
     return {
@@ -108,6 +126,7 @@ export default function MathSynchronicities({
         .slice(1)
         .join(", ")}]`
     : "—";
+  const revealActive = reveal || depth > 0.6;
 
   return (
     <section
@@ -126,6 +145,13 @@ export default function MathSynchronicities({
         <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.3em]">
           <button
             type="button"
+            onClick={() => setCollapsed((prev) => !prev)}
+            className="rounded-full border border-white/15 px-4 py-2 text-[0.65rem] text-[var(--muted)] transition hover:text-[var(--fg)]"
+          >
+            {collapsed ? "Expand" : "Fold"}
+          </button>
+          <button
+            type="button"
             onClick={() => setScanActive((prev) => !prev)}
             className="rounded-full border border-white/15 px-4 py-2 text-[0.65rem] text-[var(--muted)] transition hover:text-[var(--fg)]"
           >
@@ -136,84 +162,92 @@ export default function MathSynchronicities({
             onClick={() => setReveal((prev) => !prev)}
             className="rounded-full border border-white/15 px-4 py-2 text-[0.65rem] text-[var(--muted)] transition hover:text-[var(--fg)]"
           >
-            {reveal ? "Hide" : "Reveal"}
+            {revealActive ? "Hide" : "Reveal"}
           </button>
         </div>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-4">
-          <div className="rounded-xl border border-white/10 p-4">
-            <p className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--muted)]">
-              CONTINUED FRACTION
-            </p>
-            <p className="mt-3 text-sm text-[var(--fg)]">{continuedFraction}</p>
-          </div>
-          <div className="rounded-xl border border-white/10 p-4">
-            <p className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--muted)]">
-              CONVERGENT LOCK
-            </p>
-            <ul className="mt-3 space-y-2 text-xs uppercase tracking-[0.25em] text-[var(--muted)]">
-              {data.convergents.map((convergent, index) => (
-                <li
-                  key={`${convergent.p}-${convergent.q}`}
-                  className={`rounded-md border border-white/5 px-3 py-2 transition ${
-                    scanActive && scanFocus.convergent === index
-                      ? "border-white/30 text-[var(--fg)] animate-pulse"
-                      : ""
-                  }`}
-                >
-                  {renderConvergent(convergent, reveal)}
-                </li>
-              ))}
-            </ul>
-          </div>
+      {collapsed ? (
+        <div className="mt-6 text-xs uppercase tracking-[0.35em] text-[var(--muted)]">
+          Depth signal: {formatValue(depth, 2)}
         </div>
+      ) : (
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="space-y-4">
+            <div className="rounded-xl border border-white/10 p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--muted)]">
+                CONTINUED FRACTION
+              </p>
+              <p className="mt-3 text-sm text-[var(--fg)]">
+                {continuedFraction}
+              </p>
+            </div>
+            <div className="rounded-xl border border-white/10 p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--muted)]">
+                CONVERGENT LOCK
+              </p>
+              <ul className="mt-3 space-y-2 text-xs uppercase tracking-[0.25em] text-[var(--muted)]">
+                {data.convergents.map((convergent, index) => (
+                  <li
+                    key={`${convergent.p}-${convergent.q}`}
+                    className={`rounded-md border border-white/5 px-3 py-2 transition ${
+                      scanActive && scanFocus.convergent === index
+                        ? "border-white/30 text-[var(--fg)] animate-pulse"
+                        : ""
+                    }`}
+                  >
+                    {renderConvergent(convergent, revealActive)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
-        <div className="space-y-4">
-          <div className="rounded-xl border border-white/10 p-4">
-            <p className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--muted)]">
-              HARMONIC NEIGHBORS
-            </p>
-            <ul className="mt-3 grid grid-cols-2 gap-2 text-xs uppercase tracking-[0.25em] text-[var(--muted)]">
-              {data.harmonicNeighbors.map((neighbor, index) => (
-                <li
-                  key={`${neighbor.p}-${neighbor.q}`}
-                  className={`rounded-md border border-white/5 px-3 py-2 transition ${
-                    scanActive && scanFocus.neighbor === index
-                      ? "border-white/30 text-[var(--fg)] animate-pulse"
-                      : ""
-                  }`}
-                >
-                  {renderNeighbor(neighbor, reveal)}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-xl border border-white/10 p-4">
-            <p className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--muted)]">
-              POWER / ROOT ARRAY
-            </p>
-            <ul className="mt-3 space-y-2 text-xs uppercase tracking-[0.25em] text-[var(--muted)]">
-              {data.transforms.map((transform, index) => (
-                <li
-                  key={transform.label}
-                  className={`flex items-center justify-between gap-2 rounded-md border border-white/5 px-3 py-2 transition ${
-                    scanActive && scanFocus.transform === index
-                      ? "border-white/30 text-[var(--fg)] animate-pulse"
-                      : ""
-                  }`}
-                >
-                  <span>{renderTransform(transform, reveal)}</span>
-                  <span className="text-[0.6rem] text-[var(--muted)]">
-                    {transform.hint}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          <div className="space-y-4">
+            <div className="rounded-xl border border-white/10 p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--muted)]">
+                HARMONIC NEIGHBORS
+              </p>
+              <ul className="mt-3 grid grid-cols-2 gap-2 text-xs uppercase tracking-[0.25em] text-[var(--muted)]">
+                {data.harmonicNeighbors.map((neighbor, index) => (
+                  <li
+                    key={`${neighbor.p}-${neighbor.q}`}
+                    className={`rounded-md border border-white/5 px-3 py-2 transition ${
+                      scanActive && scanFocus.neighbor === index
+                        ? "border-white/30 text-[var(--fg)] animate-pulse"
+                        : ""
+                    }`}
+                  >
+                    {renderNeighbor(neighbor, revealActive)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-xl border border-white/10 p-4">
+              <p className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--muted)]">
+                POWER / ROOT ARRAY
+              </p>
+              <ul className="mt-3 space-y-2 text-xs uppercase tracking-[0.25em] text-[var(--muted)]">
+                {data.transforms.map((transform, index) => (
+                  <li
+                    key={transform.label}
+                    className={`flex items-center justify-between gap-2 rounded-md border border-white/5 px-3 py-2 transition ${
+                      scanActive && scanFocus.transform === index
+                        ? "border-white/30 text-[var(--fg)] animate-pulse"
+                        : ""
+                    }`}
+                  >
+                    <span>{renderTransform(transform, revealActive)}</span>
+                    <span className="text-[0.6rem] text-[var(--muted)]">
+                      {transform.hint}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {data.note ? (
         <div className="mt-6 rounded-xl border border-white/10 px-4 py-3 text-[0.65rem] uppercase tracking-[0.36em] text-[var(--muted)]">

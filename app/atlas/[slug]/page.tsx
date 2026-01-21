@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import AtlasSceneClient from "@/app/components/atlas/AtlasSceneClient";
 import MathSynchronicities from "@/app/components/atlas/MathSynchronicities";
 import MarkdownContent from "@/app/components/atlas/MarkdownContent";
 import SynchronicityPanel from "@/app/components/atlas/SynchronicityPanel";
-import { getRatioBySlug, RATIOS } from "@/app/lib/atlas/ratios";
+import { RATIOS, resolveRatioSlug } from "@/app/lib/atlas/ratios";
 import { parseRatioValue } from "@/app/lib/atlas/synchronicities";
-
-export const dynamicParams = false;
 
 export const generateStaticParams = async () =>
   RATIOS.map((ratio) => ({ slug: ratio.slug }));
@@ -29,10 +27,14 @@ export default function AtlasEntryPage({
     notFound();
   }
 
-  const entry = getRatioBySlug(slug);
+  const { entry, canonicalSlug } = resolveRatioSlug(slug);
 
   if (!entry) {
     notFound();
+  }
+
+  if (slug !== canonicalSlug) {
+    redirect(`/atlas/${canonicalSlug}`);
   }
 
   const numericValue = parseRatioValue(entry.value);
@@ -84,7 +86,7 @@ export default function AtlasEntryPage({
               ))}
             </div>
           </div>
-          <AtlasSceneClient slug={slug} />
+          <AtlasSceneClient slug={entry.slug} />
         </header>
 
         <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
