@@ -1,4 +1,4 @@
-import PiSceneClient from "@/app/pi/PiSceneClient";
+import RatioSignalPanel from "@/components/RatioSignalPanel";
 
 export default function PiPage() {
   return (
@@ -19,7 +19,11 @@ export default function PiPage() {
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
-          <PiSceneClient />
+          <RatioSignalPanel
+            label="Pi Signal"
+            ratio={Math.PI}
+            note="Polygonal echoes sweep toward a continuous ring. The signal bends as circumference spills into a line."
+          />
           <div className="grid gap-6">
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
               <h2 className="text-base font-semibold text-[var(--fg)]">

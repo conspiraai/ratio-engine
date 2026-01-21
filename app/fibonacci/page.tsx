@@ -1,4 +1,4 @@
-import FibonacciSceneClient from "@/app/fibonacci/FibonacciSceneClient";
+import RatioSignalPanel from "@/components/RatioSignalPanel";
 
 export default function FibonacciPage() {
   return (
@@ -19,7 +19,11 @@ export default function FibonacciPage() {
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
-          <FibonacciSceneClient />
+          <RatioSignalPanel
+            label="Fibonacci Signal"
+            ratio={1.6180339887}
+            note="Discrete additions curl into a spiral. The signal traces the moment where counting becomes geometry."
+          />
           <div className="grid gap-6">
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
               <h2 className="text-base font-semibold text-[var(--fg)]">

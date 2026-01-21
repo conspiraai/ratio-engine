@@ -10,11 +10,11 @@ export default function AtlasIndexPage() {
             Ratio Atlas
           </div>
           <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-            The Ratio Atlas
+            The Atlas Index
           </h1>
           <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-            A curated library of canonical ratios and their visual intelligences.
-            Each entry pairs rigorous definition with a signature 3D lattice.
+            Canonical ratios, distilled into signal cards. Choose a node to open
+            its mathematical fingerprint.
           </p>
         </header>
 
@@ -23,7 +23,7 @@ export default function AtlasIndexPage() {
             <Link
               key={ratio.id}
               href={`/atlas/${ratio.slug}`}
-              className="glass-card group rounded-2xl border border-white/10 p-6 transition hover:border-white/20"
+              className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-white/20"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -37,15 +37,12 @@ export default function AtlasIndexPage() {
                     {ratio.value}
                   </p>
                 </div>
-                <div className="atlas-badge rounded-full px-4 py-2 text-[0.65rem]">
-                  Atlas Entry
+                <div className="rounded-full border border-white/10 px-4 py-2 text-[0.6rem] uppercase tracking-[0.3em] text-[var(--muted)]">
+                  Entry
                 </div>
               </div>
               <p className="mt-4 text-sm uppercase tracking-[0.28em] text-[var(--muted)]">
                 {ratio.tagline}
-              </p>
-              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                {ratio.summary}
               </p>
               <div className="mt-5 flex flex-wrap gap-2 text-[0.65rem] uppercase tracking-[0.24em] text-[var(--muted)]">
                 {ratio.categories.map((tag) => (

@@ -1,99 +1,60 @@
 import Link from "next/link";
-import FeatureCard from "@/components/FeatureCard";
-import MetricCard from "@/components/MetricCard";
-import ThreePhiScene from "@/components/ThreePhiScene";
-
-const features = [
-  {
-    title: "Ratio inference",
-    description:
-      "Track emergent patterns across datasets with harmonic convergence and phi-weighted sampling.",
-    icon: "φ",
-  },
-  {
-    title: "Signal choreography",
-    description:
-      "Blend multi-modal feeds into a coherent resonance map using v2 engine synchronization.",
-    icon: "✦",
-  },
-  {
-    title: "Scenario synthesis",
-    description:
-      "Preview the impact of ratio shifts with adaptive simulations and time-scaled projections.",
-    icon: "△",
-  },
-];
-
-const metrics = [
-  {
-    label: "Phi drift",
-    value: "0.618",
-    note: "Golden ratio alignment across concurrent layers.",
-  },
-  {
-    label: "Signal variance",
-    value: "±2.3%",
-    note: "Stabilized entropy with predictive balancing.",
-  },
-  {
-    label: "Event horizon",
-    value: "64ms",
-    note: "Real-time feedback loop for responsive tuning.",
-  },
-];
+import SynchronicityField from "@/components/SynchronicityField";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen text-[var(--fg)]">
+    <div className="relative min-h-screen overflow-hidden text-[var(--fg)]">
+      <SynchronicityField />
       <main className="pointer-events-auto relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-16 lg:px-8">
-        <header className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-[var(--muted)]">
+        <header className="flex items-center justify-between text-[0.7rem] uppercase tracking-[0.45em] text-[var(--muted)]">
           <span>Ratio Engine</span>
-          <Link
-            href="/atlas"
-            className="atlas-badge rounded-full px-4 py-2 text-[0.65rem]"
-          >
-            Atlas
-          </Link>
+          <nav className="flex items-center gap-3">
+            <Link
+              href="/atlas"
+              className="atlas-badge rounded-full px-4 py-2 text-[0.6rem]"
+            >
+              Atlas
+            </Link>
+            <Link
+              href="/atlas/phi"
+              className="rounded-full border border-white/10 px-4 py-2 text-[0.6rem] text-[var(--muted)] transition hover:text-[var(--fg)]"
+            >
+              Diagnostics
+            </Link>
+          </nav>
         </header>
         <section className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div className="relative z-10 space-y-8">
-            <div className="chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs tracking-[0.25em]">
-              Ratio Engine v2
+          <div className="space-y-8">
+            <div className="chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs tracking-[0.35em]">
+              FIELD NODE / v3
             </div>
             <div className="space-y-6">
               <h1 className="text-4xl font-semibold leading-tight text-[var(--fg)] sm:text-5xl">
-                Harmonize systems with phi-driven intelligence.
+                Ratio Engine monitors the quiet harmonics behind motion.
               </h1>
               <p className="text-lg text-[var(--muted)]">
-                Ratio Engine turns complex streams into an intuitive orchestration
-                layer—balancing growth, decay, and resonance in a single
-                visualization pipeline.
+                A cryptic interface for observing emergent sequences, phase drift,
+                and prime-indexed resonance without revealing the source.
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row">
               <Link href="/atlas/phi" className="btn-primary px-6 py-3 text-sm">
-                Launch diagnostic
+                Initiate field read
               </Link>
               <Link href="/atlas" className="btn-secondary px-6 py-3 text-sm">
-                View engine logs
+                Enter atlas
               </Link>
             </div>
           </div>
-          <div className="relative z-0">
-            <ThreePhiScene />
+          <div className="glass-card rounded-3xl border border-white/10 p-6 text-[0.7rem] uppercase tracking-[0.4em] text-[var(--muted)]">
+            <p>Signal lattice online.</p>
+            <p className="mt-4 text-2xl font-semibold text-[var(--fg)]">
+              φ / π / √2 / √3
+            </p>
+            <p className="mt-3 text-xs text-[var(--muted)]">
+              Residual cycles stabilize when sequences converge.
+            </p>
           </div>
-        </section>
-
-        <section className="grid gap-6 md:grid-cols-3">
-          {metrics.map((metric) => (
-            <MetricCard key={metric.label} {...metric} />
-          ))}
-        </section>
-
-        <section className="grid gap-6 md:grid-cols-3">
-          {features.map((feature) => (
-            <FeatureCard key={feature.title} {...feature} />
-          ))}
         </section>
       </main>
     </div>

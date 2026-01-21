@@ -1,4 +1,4 @@
-import GoldenAngleSceneClient from "@/app/golden-angle/GoldenAngleSceneClient";
+import RatioSignalPanel from "@/components/RatioSignalPanel";
 
 export default function GoldenAnglePage() {
   return (
@@ -19,7 +19,11 @@ export default function GoldenAnglePage() {
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
-          <GoldenAngleSceneClient />
+          <RatioSignalPanel
+            label="Golden Angle Signal"
+            ratio={137.507764}
+            note="A persistent angular offset keeps the lattice from repeating. The gap stays open through every rotation."
+          />
           <div className="grid gap-6">
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
               <h2 className="text-base font-semibold text-[var(--fg)]">

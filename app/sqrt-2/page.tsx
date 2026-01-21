@@ -1,4 +1,4 @@
-import Sqrt2SceneClient from "@/app/sqrt-2/Sqrt2SceneClient";
+import RatioSignalPanel from "@/components/RatioSignalPanel";
 
 export default function SqrtTwoPage() {
   return (
@@ -19,7 +19,11 @@ export default function SqrtTwoPage() {
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
-          <Sqrt2SceneClient />
+          <RatioSignalPanel
+            label="√2 Signal"
+            ratio={Math.SQRT2}
+            note="The diagonal stretches a unit square into a root-two rectangle. The field keeps the fold visible."
+          />
           <div className="grid gap-6">
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
               <h2 className="text-base font-semibold text-[var(--fg)]">
