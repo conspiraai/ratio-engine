@@ -1,4 +1,5 @@
-import PhiSceneClient from "@/app/phi/PhiSceneClient";
+import RatioSignalPanel from "@/components/RatioSignalPanel";
+import { PHI } from "@/lib/engine/synchronicity";
 
 export default function PhiPage() {
   return (
@@ -19,17 +20,19 @@ export default function PhiPage() {
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
-          <PhiSceneClient />
+          <RatioSignalPanel
+            label="Phi Signal"
+            ratio={PHI}
+            note="Phi spirals through recursive growth. The signal traces a logarithmic curl anchored in the golden rectangle."
+          />
           <div className="grid gap-6">
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
               <h2 className="text-base font-semibold text-[var(--fg)]">
                 Math Notes
               </h2>
               <p className="mt-3 leading-6">
-                Points follow the golden angle (~137.507764°), distributing
-                evenly without radial alignment. The frame stack traces a golden
-                rectangle recursion, revealing the φ proportion in layered
-                space.
+                Phi solves x² = x + 1. Its ratios stabilize across recursive
+                sequences, forming a natural limit inside spirals and pentagons.
               </p>
             </div>
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
@@ -37,9 +40,8 @@ export default function PhiPage() {
                 Interaction
               </h2>
               <p className="mt-3 leading-6">
-                Increase density to reveal the sunflower-like packing. Adjust
-                recursion depth with the slider or scroll wheel to deepen the
-                golden frame stack.
+                The canvas reacts to time, shifting orbit radius and spiral
+                cadence to suggest harmonic drift.
               </p>
             </div>
           </div>

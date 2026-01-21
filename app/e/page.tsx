@@ -1,4 +1,4 @@
-import ESceneClient from "@/app/e/ESceneClient";
+import RatioSignalPanel from "@/components/RatioSignalPanel";
 
 export default function EPage() {
   return (
@@ -19,7 +19,11 @@ export default function EPage() {
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
-          <ESceneClient />
+          <RatioSignalPanel
+            label="Euler Signal"
+            ratio={Math.E}
+            note="Exponentials inhale, logarithms exhale. The trace compresses and expands without breaking continuity."
+          />
           <div className="grid gap-6">
             <div className="glass-card rounded-2xl p-6 text-sm text-[var(--muted)]">
               <h2 className="text-base font-semibold text-[var(--fg)]">

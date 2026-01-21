@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import AtlasSceneClient from "@/app/components/atlas/AtlasSceneClient";
 import MathSynchronicities from "@/app/components/atlas/MathSynchronicities";
 import MarkdownContent from "@/app/components/atlas/MarkdownContent";
+import SynchronicityPanel from "@/app/components/atlas/SynchronicityPanel";
 import { getRatioBySlug, RATIOS } from "@/app/lib/atlas/ratios";
 import { parseRatioValue } from "@/app/lib/atlas/synchronicities";
 
@@ -23,7 +24,12 @@ export default function AtlasEntryPage({
 }: {
   params: { slug: string };
 }) {
-  const entry = getRatioBySlug(params.slug);
+  const slug = typeof params?.slug === "string" ? params.slug : "";
+  if (!slug) {
+    notFound();
+  }
+
+  const entry = getRatioBySlug(slug);
 
   if (!entry) {
     notFound();
@@ -78,7 +84,7 @@ export default function AtlasEntryPage({
               ))}
             </div>
           </div>
-          <AtlasSceneClient slug={params.slug} />
+          <AtlasSceneClient slug={slug} />
         </header>
 
         <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
@@ -107,6 +113,7 @@ export default function AtlasEntryPage({
           </aside>
 
           <main className="space-y-10">
+            <SynchronicityPanel value={numericValue} slug={entry.slug} />
             <MathSynchronicities value={numericValue} slug={entry.slug} />
             {entry.sections.map((section) => {
               const anchor = toAnchorId(section.title);
